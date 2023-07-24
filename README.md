@@ -1,3 +1,9 @@
+### Note on fork
+I made fontdue no longer be 'no_std' by removing dep on hashbrown and replacing with std::collections' HashMap and HashSet.
+Since my project already depends on std, I had no reason to not depend on it here.
+
+- Erik W. G.
+
 # Fontdue
 
 [![Test](https://github.com/mooman219/fontdue/workflows/Test/badge.svg)](https://github.com/mooman219/fontdue/actions)
