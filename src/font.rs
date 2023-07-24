@@ -12,11 +12,8 @@ use core::hash::{Hash, Hasher};
 use core::mem;
 use core::num::NonZeroU16;
 use core::ops::Deref;
-use hashbrown::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet};
 use ttf_parser::{Face, FaceParsingError, GlyphId, Tag};
-
-#[cfg(feature = "parallel")]
-use rayon::prelude::*;
 
 /// Defines the bounds for a glyph's outline in subpixels. A glyph's outline is always contained in
 /// its bitmap.
@@ -295,17 +292,6 @@ impl Font {
         #[cfg(not(feature = "parallel"))]
         for index in seen_mappings {
             glyphs[index as usize] = generate_glyph(index)?;
-        }
-
-        #[cfg(feature = "parallel")]
-        {
-            let generated: Vec<(u16, Glyph)> = seen_mappings
-                .into_par_iter()
-                .map(|index| Ok((index, generate_glyph(index)?)))
-                .collect::<Result<_, _>>()?;
-            for (index, glyph) in generated {
-                glyphs[index as usize] = glyph;
-            }
         }
 
         // New line metrics.
